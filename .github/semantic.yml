@@ -1,36 +1,37 @@
-titleOnly: true
+with:
+  types:
+    - feat
+    - improve
+    - fix
+    - cleanup
+    - refactor
+    - revert
 
-types:
-  - feat
-  - improve
-  - fix
-  - cleanup
-  - refactor
-  - revert
+  scopes:
+    - admin
+    - broker
+    - cli
+    - io
+    - fn
+    - meta
+    - monitor
+    - proxy
+    - schema
+    - sec
+    - sql
+    - storage
+    - offload
+    - txn
+    - java
+    - cpp
+    - py
+    - ws
+    - test
+    - ci
+    - build
+    - misc
+    - doc
+    - blog
+    - site
 
-scopes:
-  - admin
-  - broker
-  - cli
-  - io
-  - fn
-  - meta
-  - monitor
-  - proxy
-  - schema
-  - sec
-  - sql
-  - storage
-  - offload
-  - txn
-  - java
-  - cpp
-  - py
-  - ws
-  - test
-  - ci
-  - build
-  - misc
-  - doc
-  - blog
-  - site
+  headerPattern: '^(?:\[(\w*)\])?(?:\[([\w$.\-*/ ]*)\])?: (.*)$'
