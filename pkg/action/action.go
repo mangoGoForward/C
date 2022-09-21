@@ -42,6 +42,14 @@ func NewAction(ctx context.Context, ac *Config) *Action {
 	}
 }
 
+func NewActionWithClient(ctx context.Context, ac *Config, client *github.Client) *Action {
+	return &Action{
+		config:        ac,
+		globalContext: ctx,
+		client:        client,
+	}
+}
+
 func (a *Action) Run(prNumber int, actionType string) error {
 	a.prNumber = prNumber
 
