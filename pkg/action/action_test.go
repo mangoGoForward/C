@@ -25,6 +25,18 @@ func mustNewActionConfig() *Config {
 	return config
 }
 
+func mustNewActionWithDefaultConfig() *Config {
+	_ = os.Setenv("GITHUB_REPOSITORY", "mangoGoForward/C")
+
+	githubAction := githubactions.New()
+	config, err := NewActionConfig(githubAction)
+	if err != nil {
+		panic(err)
+	}
+
+	return config
+}
+
 func assertMessageLabel(t *testing.T, err error, message string) {
 	t.Helper()
 
@@ -147,4 +159,28 @@ func TestEmptyScopeOfTitleUnMatched(t *testing.T) {
 
 	err := action.Run(1, openedActionType)
 	assertMessageLabel(t, err, TitleUnmatchPattern)
+}
+
+func TestTitleMatchedWithDefaultConfig(t *testing.T) {
+	id := int64(1)
+	title := "[feat][ci] Support to check pr title"
+
+	mockedHTTPClient := mock.NewMockedHTTPClient(
+		mock.WithRequestMatch(
+			mock.GetReposPullsByOwnerByRepoByPullNumber,
+			github.PullRequest{
+				ID:     &id,
+				Title:  &title,
+				Labels: nil,
+			},
+		),
+	)
+
+	config := mustNewActionWithDefaultConfig()
+	action := NewActionWithClient(context.Background(), config, github.NewClient(mockedHTTPClient))
+
+	err := action.Run(1, openedActionType)
+	if err != nil {
+		t.Fatal(err)
+	}
 }

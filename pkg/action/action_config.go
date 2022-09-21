@@ -17,6 +17,12 @@ type Config struct {
 	headerPattern *string
 }
 
+var defaultTypes = [6]string{"feat", "improve", "fix", "cleanup", "refactor", "revert"}
+var defaultScopes = [...]string{"admin", "broker", "cli", "io", "fn", "meta", "monitor", "proxy", "schema", "sec",
+	"sql", "storage", "offload", "txn", "java", "cpp", "py", "ws", "test", "ci", "build",
+	"misc", "doc", "blog", "site"}
+var defaultHeaderPattern = "^(?:\\[(\\w+)\\])?(?:\\[(\\w+)\\])? (.+)$"
+
 func NewActionConfig(action *githubactions.Action) (*Config, error) {
 	ownerRepoSlug := os.Getenv("GITHUB_REPOSITORY")
 	ownerRepo := strings.Split(ownerRepoSlug, "/")
@@ -28,8 +34,17 @@ func NewActionConfig(action *githubactions.Action) (*Config, error) {
 	token := os.Getenv("GITHUB_TOKEN")
 
 	types := strings.Fields(strings.TrimSpace(action.GetInput("types")))
+	if len(types) == 0 {
+		types = defaultTypes[:]
+	}
 	scopes := strings.Fields(strings.TrimSpace(action.GetInput("scopes")))
+	if len(scopes) == 0 {
+		scopes = defaultScopes[:]
+	}
 	headerPattern := action.GetInput("headerPattern")
+	if len(headerPattern) == 0 {
+		headerPattern = defaultHeaderPattern
+	}
 
 	return &Config{
 		token:         &token,
