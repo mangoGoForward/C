@@ -67,7 +67,7 @@ func TestTitleMatched(t *testing.T) {
 	config := mustNewActionConfig()
 	action := NewActionWithClient(context.Background(), config, github.NewClient(mockedHTTPClient))
 
-	err := action.Run(1, openedActionType)
+	err := action.Run(int(id), openedActionType)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -77,21 +77,26 @@ func TestTypeOfTitleUnMatched(t *testing.T) {
 	id := int64(1)
 	title := "[rewrite][ci] Support to check pr title"
 
+	userLogin := "mango"
 	mockedHTTPClient := mock.NewMockedHTTPClient(
 		mock.WithRequestMatch(
 			mock.GetReposPullsByOwnerByRepoByPullNumber,
 			github.PullRequest{
-				ID:     &id,
+				ID: &id,
+				User: &github.User{
+					Login: &userLogin,
+				},
 				Title:  &title,
 				Labels: nil,
 			},
 		),
+		mock.WithRequestMatch(mock.PostReposIssuesCommentsByOwnerByRepoByIssueNumber, nil),
 	)
 
 	config := mustNewActionConfig()
 	action := NewActionWithClient(context.Background(), config, github.NewClient(mockedHTTPClient))
 
-	err := action.Run(1, openedActionType)
+	err := action.Run(int(id), openedActionType)
 	assertMessageLabel(t, err, TitleUnmatchPattern)
 }
 
@@ -99,21 +104,26 @@ func TestScopeOfTitleUnMatched(t *testing.T) {
 	id := int64(1)
 	title := "[feat][ci1] Support to check pr title"
 
+	userLogin := "mango"
 	mockedHTTPClient := mock.NewMockedHTTPClient(
 		mock.WithRequestMatch(
 			mock.GetReposPullsByOwnerByRepoByPullNumber,
 			github.PullRequest{
-				ID:     &id,
+				ID: &id,
+				User: &github.User{
+					Login: &userLogin,
+				},
 				Title:  &title,
 				Labels: nil,
 			},
 		),
+		mock.WithRequestMatch(mock.PostReposIssuesCommentsByOwnerByRepoByIssueNumber, nil),
 	)
 
 	config := mustNewActionConfig()
 	action := NewActionWithClient(context.Background(), config, github.NewClient(mockedHTTPClient))
 
-	err := action.Run(1, openedActionType)
+	err := action.Run(int(id), openedActionType)
 	assertMessageLabel(t, err, TitleUnmatchPattern)
 }
 
@@ -121,21 +131,26 @@ func TestEmptyTypeOfTitleUnMatched(t *testing.T) {
 	id := int64(1)
 	title := "[][ci1] Support to check pr title"
 
+	userLogin := "mango"
 	mockedHTTPClient := mock.NewMockedHTTPClient(
 		mock.WithRequestMatch(
 			mock.GetReposPullsByOwnerByRepoByPullNumber,
 			github.PullRequest{
-				ID:     &id,
+				ID: &id,
+				User: &github.User{
+					Login: &userLogin,
+				},
 				Title:  &title,
 				Labels: nil,
 			},
 		),
+		mock.WithRequestMatch(mock.PostReposIssuesCommentsByOwnerByRepoByIssueNumber, nil),
 	)
 
 	config := mustNewActionConfig()
 	action := NewActionWithClient(context.Background(), config, github.NewClient(mockedHTTPClient))
 
-	err := action.Run(1, openedActionType)
+	err := action.Run(int(id), openedActionType)
 	assertMessageLabel(t, err, TitleUnmatchPattern)
 }
 
@@ -143,21 +158,26 @@ func TestEmptyScopeOfTitleUnMatched(t *testing.T) {
 	id := int64(1)
 	title := "[feat][] Support to check pr title"
 
+	userLogin := "mango"
 	mockedHTTPClient := mock.NewMockedHTTPClient(
 		mock.WithRequestMatch(
 			mock.GetReposPullsByOwnerByRepoByPullNumber,
 			github.PullRequest{
-				ID:     &id,
+				ID: &id,
+				User: &github.User{
+					Login: &userLogin,
+				},
 				Title:  &title,
 				Labels: nil,
 			},
 		),
+		mock.WithRequestMatch(mock.PostReposIssuesCommentsByOwnerByRepoByIssueNumber, nil),
 	)
 
 	config := mustNewActionConfig()
 	action := NewActionWithClient(context.Background(), config, github.NewClient(mockedHTTPClient))
 
-	err := action.Run(1, openedActionType)
+	err := action.Run(int(id), openedActionType)
 	assertMessageLabel(t, err, TitleUnmatchPattern)
 }
 
@@ -179,7 +199,7 @@ func TestTitleMatchedWithDefaultConfig(t *testing.T) {
 	config := mustNewActionWithDefaultConfig()
 	action := NewActionWithClient(context.Background(), config, github.NewClient(mockedHTTPClient))
 
-	err := action.Run(1, openedActionType)
+	err := action.Run(int(id), openedActionType)
 	if err != nil {
 		t.Fatal(err)
 	}

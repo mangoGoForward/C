@@ -70,16 +70,13 @@ func (a *Action) checkPRTitle() error {
 
 	re := regexp.MustCompile(a.config.GetHeaderPattern())
 	matched := re.FindSubmatch([]byte(*title))
-	titleInvalid := false
+	titleInvalid := true
 	if len(matched) == 4 {
 		titleType := bytes.NewBuffer(matched[1]).String()
-		if !existInArr(titleType, a.config.GetTypes()) {
-			titleInvalid = true
-		}
-
 		titleScope := bytes.NewBuffer(matched[2]).String()
-		if !existInArr(titleScope, a.config.GetScopes()) {
-			titleInvalid = true
+
+		if existInArr(titleType, a.config.GetTypes()) && existInArr(titleScope, a.config.GetScopes()) {
+			titleInvalid = false
 		}
 	}
 
