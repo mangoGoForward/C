@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	TitleUnmatchPattern = `Please follow [Pulsar Pull Request Naming Convention Guide]
-(https://docs.google.com/document/d/1d8Pw6ZbWk-_pCKdOmdvx9rnhPiyuxwq60_TrD68d7BA/edit#) to write a PR title.`
+	TitleUnmatchPattern = `Please follow the [Pulsar Pull Request Naming Convention Guide]
+(https://docs.google.com/document/d/1d8Pw6ZbWk-_pCKdOmdvx9rnhPiyuxwq60_TrD68d7BA/edit#bookmark=id.y8943h392zno) to write your PR title.`
 
 	openedActionType = "opened"
 	editedActionType = "edited"
@@ -70,19 +70,35 @@ func (a *Action) checkPRTitle() error {
 
 	re := regexp.MustCompile(a.config.GetHeaderPattern())
 	matched := re.FindSubmatch([]byte(*title))
+	titleInvalid := false
 	if len(matched) == 4 {
 		titleType := bytes.NewBuffer(matched[1]).String()
 		if !existInArr(titleType, a.config.GetTypes()) {
-			return errors.New(TitleUnmatchPattern)
+			titleInvalid = true
 		}
 
 		titleScope := bytes.NewBuffer(matched[2]).String()
 		if !existInArr(titleScope, a.config.GetScopes()) {
-			return errors.New(TitleUnmatchPattern)
+			titleInvalid = true
 		}
+	}
+
+	if titleInvalid {
+		err = a.createComment(fmt.Sprintf("@%s %s", pr.User.GetLogin(), TitleUnmatchPattern))
+		if err != nil {
+			logger.Errorf("Failed to create %s comment: %v", TitleUnmatchPattern, err)
+			return err
+		}
+		return errors.New(TitleUnmatchPattern)
+	} else {
 		return nil
 	}
-	return errors.New(TitleUnmatchPattern)
+}
+
+func (a *Action) createComment(body string) error {
+	_, _, err := a.client.Issues.CreateComment(a.globalContext, a.config.GetOwner(), a.config.GetRepo(),
+		a.prNumber, &github.IssueComment{Body: func(v string) *string { return &v }(body)})
+	return err
 }
 
 func existInArr(target string, origin []string) bool {
