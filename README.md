@@ -33,9 +33,9 @@ The following terminology helps to understand the configuration options:
 
 ```
 [feat][ui] Add `Button` component.
-^    	^    ^
-|    	|    |__ Subject
-|    	|_______ Scope
+^      ^   ^
+|      |   |__ Subject
+|      |_______ Scope
 |____________ Type
 ```
 
