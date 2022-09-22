@@ -12,8 +12,7 @@ import (
 )
 
 const (
-	TitleUnmatchPattern = `Please follow the [Pulsar Pull Request Naming Convention Guide](https://docs.google.com/document/d/1d8Pw6ZbWk-_pCKdOmdvx9rnhPiyuxwq60_TrD68d7BA/edit#bookmark=id.y8943h392zno) 
-	to write your PR title.`
+	TitleUnmatchPattern = `Please follow the [Pulsar Pull Request Naming Convention Guide](https://docs.google.com/document/d/1d8Pw6ZbWk-_pCKdOmdvx9rnhPiyuxwq60_TrD68d7BA/edit#bookmark=id.y8943h392zno) to write your PR title.`
 
 	openedActionType = "opened"
 	editedActionType = "edited"
